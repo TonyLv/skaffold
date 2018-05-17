@@ -22,6 +22,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/GoogleContainerTools/skaffold/pkg/skaffold/build/tag"
 	"github.com/GoogleContainerTools/skaffold/pkg/skaffold/constants"
@@ -92,9 +93,14 @@ func (l *LocalBuilder) Build(ctx context.Context, out io.Writer, tagger tag.Tagg
 			return nil, errors.Wrap(err, "running build for artifact")
 		}
 
-		digest, err := docker.Digest(ctx, l.api, initialTag)
-		if err != nil {
-			return nil, errors.Wrapf(err, "build and tag: %s", initialTag)
+		digest := ""
+		if strings.HasPrefix(initialTag, "sha256:") {
+			digest = initialTag
+		} else {
+			digest, err = docker.Digest(ctx, l.api, initialTag)
+			if err != nil {
+				return nil, errors.Wrapf(err, "build and tag: %s", initialTag)
+			}
 		}
 		if digest == "" {
 			return nil, fmt.Errorf("digest not found")
