@@ -202,6 +202,7 @@ func (c *SkaffoldConfig) defaultToDockerArtifacts() {
 			continue
 		}
 
+		logrus.Debugf("Defaulting artifact type to Docker")
 		artifact.ArtifactType = ArtifactType{
 			DockerArtifact: &DockerArtifact{},
 		}
