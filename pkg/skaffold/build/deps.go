@@ -23,6 +23,7 @@ import (
 
 	"github.com/GoogleContainerTools/skaffold/pkg/skaffold/bazel"
 	"github.com/GoogleContainerTools/skaffold/pkg/skaffold/docker"
+	"github.com/GoogleContainerTools/skaffold/pkg/skaffold/packer"
 	"github.com/GoogleContainerTools/skaffold/pkg/skaffold/schema/v1alpha2"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
@@ -127,6 +128,7 @@ func pathsForArtifact(a *v1alpha2.Artifact) ([]string, error) {
 var (
 	DefaultDockerfileDepResolver DependencyResolver = &docker.DockerfileDepResolver{}
 	DefaultBazelDepResolver      DependencyResolver = &bazel.BazelDependencyResolver{}
+	DefaultPackerDepResolver      DependencyResolver = &packer.PackerDependencyResolver{}
 )
 
 func GetDependenciesForArtifact(artifact *v1alpha2.Artifact) ([]string, error) {
@@ -136,6 +138,8 @@ func GetDependenciesForArtifact(artifact *v1alpha2.Artifact) ([]string, error) {
 	if artifact.BazelArtifact != nil {
 		return DefaultBazelDepResolver.GetDependencies(artifact)
 	}
-
+	if artifact.PackerArtifact != nil {
+		return DefaultPackerDepResolver.GetDependencies(artifact)
+	}
 	return nil, fmt.Errorf("undefined artifact type: %+v", artifact.ArtifactType)
 }

@@ -161,6 +161,7 @@ type BazelArtifact struct {
 type PackerArtifact struct {
 	Template string `yaml:"template"`
 	Manifest string `yaml:"manifest"`
+	Files []string `yaml:"`
 }
 
 // Parse reads a SkaffoldConfig from yaml.
