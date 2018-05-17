@@ -146,6 +146,7 @@ type Profile struct {
 type ArtifactType struct {
 	DockerArtifact *DockerArtifact `yaml:"docker"`
 	BazelArtifact  *BazelArtifact  `yaml:"bazel"`
+	PackerArtifact  *PackerArtifact  `yaml:"packer"`
 }
 
 type DockerArtifact struct {
@@ -155,6 +156,11 @@ type DockerArtifact struct {
 
 type BazelArtifact struct {
 	BuildTarget string `yaml:"target"`
+}
+
+type PackerArtifact struct {
+	Template string `yaml:"template"`
+	Manifest string `yaml:"manifest"`
 }
 
 // Parse reads a SkaffoldConfig from yaml.
