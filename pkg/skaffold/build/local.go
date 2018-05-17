@@ -72,6 +72,9 @@ func (l *LocalBuilder) runBuildForArtifact(ctx context.Context, out io.Writer, a
 	if artifact.BazelArtifact != nil {
 		return l.buildBazel(ctx, out, artifact)
 	}
+	if artifact.PackerArtifact != nil {
+		return l.buildPacker(ctx, out, artifact)
+	}
 
 	return "", fmt.Errorf("undefined artifact type: %+v", artifact.ArtifactType)
 }
