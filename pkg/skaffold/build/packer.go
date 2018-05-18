@@ -43,8 +43,25 @@ type PackerManifest struct {
 }
 
 func (l *LocalBuilder) buildPacker(ctx context.Context, out io.Writer, a *v1alpha2.Artifact) (string, error) {
-	logrus.Debugf("Starting packer build with template '%s'", a.PackerArtifact.Template)
-	cmd := exec.Command("packer", "build", a.PackerArtifact.Template)
+	previous_builds := ctx.Value("builds").(*BuildResult)
+
+	tag := ""
+	for _, b := range previous_builds.Builds {
+		if b.ImageName == a.PackerArtifact.Image {
+			tag = b.Tag
+			logrus.Debugf("Found previous tagged image: %s", tag)
+			break
+		}
+	}
+
+	packer_subcmd := []string { "build" }
+	if tag != "" {
+		packer_subcmd = append(packer_subcmd, "-var", "base_image="+tag)
+	}
+	packer_subcmd = append(packer_subcmd, a.PackerArtifact.Template)
+
+	logrus.Debugf("Running packer command: 'packer %s'", packer_subcmd)
+	cmd := exec.Command("packer", packer_subcmd...)
 	cmd.Dir = a.Workspace
 	cmd.Stdout = out
 	cmd.Stderr = out
