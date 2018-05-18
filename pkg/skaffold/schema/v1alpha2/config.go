@@ -160,6 +160,7 @@ type BazelArtifact struct {
 
 type PackerArtifact struct {
 	Template string `yaml:"template"`
+	Image string `yaml:"image"`
 	Manifest string `yaml:"manifest"`
 	Files []string `yaml:"`
 }
