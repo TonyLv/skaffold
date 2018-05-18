@@ -90,6 +90,10 @@ func (l *LocalBuilder) Build(ctx context.Context, out io.Writer, tagger tag.Tagg
 	defer l.api.Close()
 
 	res := &BuildResult{}
+
+	// Storing builds in context allows for subsequent builds to rely on the
+	// stored tag of a previous build.
+	ctx = context.WithValue(ctx, "builds", res)
 	for _, artifact := range artifacts {
 		initialTag, err := l.runBuildForArtifact(ctx, out, artifact)
 		if err != nil {
